@@ -40,9 +40,8 @@ So here I am, trying to emulate, see if it is feasible, and use it as an opportu
   - 0-7: represents an unsigned integer indicating which button was pressed
 
 ## Implementation
-- [ ] have containers ready
-  - requester
-  - handler
+- [x] have containers ready
+  - workspace
   - redis
 - [ ] implement requester
 - [ ] implement handler
