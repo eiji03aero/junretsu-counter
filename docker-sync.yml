@@ -1,0 +1,8 @@
+version: "2"
+options:
+  verbose: false
+syncs:
+  v-sync-junretsu-counter:
+    src: '.'
+    sync_excludes: ['.git']
+    notify_terminal: false

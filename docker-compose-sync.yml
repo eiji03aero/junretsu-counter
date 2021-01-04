@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  workspace:
+    volumes:
+      - v-sync-junretsu-counter:/app:nocopy
+
+volumes:
+  v-sync-junretsu-counter:
+    external: true
