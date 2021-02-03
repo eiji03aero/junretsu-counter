@@ -23,13 +23,12 @@ So here I am, trying to emulate, see if it is feasible, and use it as an opportu
     just a target performance and try to optimize codes as much as possible.
 
 ### Components
-- Requester
-  - makes request concurrently.
-  - assign 1 cpu core.
-- Handler
+- Client
+  - makes requests.
+- Server
   - handles request to:
     - increments counter
-    - keep the count to its own memory and flush it to db once in a while?
+    - keep the count to its own memory and flush it to db at proper rate
 - DB
   - holds the current count, so that external system can retrieve it.
 
@@ -37,11 +36,38 @@ So here I am, trying to emulate, see if it is feasible, and use it as an opportu
 - have db running.
 - create one process for requester and handler respectively and measure the amount.
 - request should be following layout in bits
-  - 0-7: represents an unsigned integer indicating which button was pressed
+  - 0-7: unsigned integer ... indicates which button was pressed
 
 ## Implementation
 - [x] have containers ready
   - workspace
   - redis
+
+- [ ] implement initial try
+  - the simplemst way
+  - client
+    - just make request within loop
+  - server
+    - just handle requests within loop
+    - write down the count on the closest last milli second
+
 - [ ] implement requester
+  - [ ] make sure to understand some of the go features
+    - worker pool with go routine and channel
+    - channel buffer
+    - measure the time it takes to do context switch
+  - [ ] try make it increment like
+    - increase number of workers
+      - try to find the most optimized number of workers to handle requests
+    - try utilize multiple cores
+    - measure how many jobs(increment) it can process
 - [ ] implement handler
+
+## Todo
+- [ ] learn about bufio
+- [ ] learn about atomic function, should be best choice to increment concurrently
+
+## Reference
+- https://ops.tips/blog/udp-client-and-server-in-go/
+- https://medium.com/a-journey-with-go/go-string-conversion-optimization-767b019b75ef
+- https://medium.com/a-journey-with-go/go-introduction-to-the-escape-analysis-f7610174e890

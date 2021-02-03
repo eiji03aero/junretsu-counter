@@ -2,7 +2,9 @@ version: '3.7'
 
 services:
   workspace:
-    image: golang:1.14.1-buster
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
