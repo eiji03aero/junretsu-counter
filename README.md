@@ -43,29 +43,21 @@ So here I am, trying to emulate, see if it is feasible, and use it as an opportu
   - workspace
   - redis
 
-- [ ] implement initial try
+- [x] implement initial try
   - the simplemst way
+  - probably this works best given local machine does not have many cores ... :D
   - client
     - just make request within loop
   - server
     - just handle requests within loop
     - write down the count on the closest last milli second
 
-- [ ] implement requester
-  - [ ] make sure to understand some of the go features
-    - worker pool with go routine and channel
-    - channel buffer
-    - measure the time it takes to do context switch
-  - [ ] try make it increment like
-    - increase number of workers
-      - try to find the most optimized number of workers to handle requests
-    - try utilize multiple cores
-    - measure how many jobs(increment) it can process
-- [ ] implement handler
-
 ## Todo
-- [ ] learn about bufio
-- [ ] learn about atomic function, should be best choice to increment concurrently
+- [ ] about heap allocation
+  - see if creating slice allocates
+- [x] learn about bufio
+- [ ] learn about atomic function
+  - should be best choice to increment concurrently
 
 ## Reference
 - https://ops.tips/blog/udp-client-and-server-in-go/

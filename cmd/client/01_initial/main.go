@@ -1,14 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net"
 	"time"
-)
 
-const maxBufferSize = 1024
+	"github.com/eiji03aero/junretsu-counter/internal/payload"
+)
 
 func client(ctx context.Context, address string) (conn *net.UDPConn, err error) {
 	raddr, err := net.ResolveUDPAddr("udp", address)
@@ -17,43 +18,50 @@ func client(ctx context.Context, address string) (conn *net.UDPConn, err error) 
 	}
 
 	conn, err = net.DialUDP("udp", nil, raddr)
-	if err != nil {
-		return
-	}
+	return
 }
 
 func main() {
 	ctx := context.Background()
+
 	conn, err := client(ctx, "127.0.0.1:3000")
 	defer conn.Close()
-	// reader io.Reader
-
-	// create for loop
-	//   - encode data
-	//   - create reader
-	//   - io.Copy to send request
+	if err != nil {
+		panic(err)
+	}
 
 	doneChan := make(chan error, 1)
 
-	// go func() {
-	// 	n, err := io.Copy(conn, reader)
-	// 	conn.Write()
-	// 	if err != nil {
-	// 		doneChan <- err
-	// 		return
-	// 	}
-	//
-	// 	fmt.Printf("packet-written: bytes=%d\n", n)
-	//
-	// 	doneChan <- nil
-	// }()
-	//
-	// select {
-	// case <-ctx.Done():
-	// 	fmt.Println("cancelled")
-	// 	err = ctx.Err()
-	// case err = <-doneChan:
-	// }
+	go func() {
+		send := func (buttonId uint8) error {
+			data := payload.Encode(buttonId)
+			buf := bytes.NewBuffer(data)
+			_, err := io.Copy(conn, buf)
+			return err
+		}
 
-	return
+		timeout := time.After(1 * time.Second)
+LOOP:
+		for {
+			select {
+			case <-timeout:
+				break LOOP
+			default:
+				send(0)
+			}
+		}
+
+		send(1)
+
+		doneChan <- nil
+	}()
+
+	select {
+	case <-ctx.Done():
+		fmt.Println("cancelled")
+		err = ctx.Err()
+		panic(err)
+	case <-doneChan:
+		fmt.Println("done")
+	}
 }
